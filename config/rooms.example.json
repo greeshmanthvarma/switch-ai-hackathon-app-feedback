@@ -1,0 +1,12 @@
+{
+  "id": "demo-unconfigured",
+  "switchRoomId": "REQUIRED",
+  "githubRepo": "REQUIRED/REQUIRED",
+  "baseBranch": "main",
+  "feedbackAgentId": "REQUIRED",
+  "feedbackMention": "REQUIRED",
+  "engineers": [],
+  "workers": [],
+  "vercelProjectId": null,
+  "allowedPreviewHosts": []
+}

@@ -1,0 +1,3 @@
+# Stop automated implementation at verified PR handoff
+
+The workflow ends automated implementation at a technically verified PR with a working preview where applicable, then collects requester feedback or acceptance in the original thread. Engineering owns subsequent review, branch updates, conflicts, merge, and issue closure, and may use its own agents for that work. This deliberately rejects the earlier merge-monitoring and automatic-closure proposal: it keeps the demo focused and avoids coupling intake to every team's integration process. PR handoff and requester acceptance must remain distinguishable from merged, resolved, or shipped.

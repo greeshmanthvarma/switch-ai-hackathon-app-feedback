@@ -1,0 +1,13 @@
+# Opt-in local F2 prerequisite; not started by F1. Credentials stay in .local/compose.env.
+services:
+  postgres:
+    image: postgres:16
+    profiles: [coordination]
+    environment:
+      POSTGRES_DB: app_feedback
+      POSTGRES_USER: app_feedback
+      POSTGRES_PASSWORD: ${COORDINATOR_DB_PASSWORD:?Set a local disposable password}
+    ports: ["127.0.0.1:54329:5432"]
+    volumes: [coordination-data:/var/lib/postgresql/data]
+volumes:
+  coordination-data:

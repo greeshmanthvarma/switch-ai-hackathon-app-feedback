@@ -1,0 +1,3 @@
+# Enforce request coordination outside agent memory
+
+Multiple engineers' agents can claim work from a shared pool, while requester confirmation and engineering authorization have different authority. Use a small persistent coordination service to enforce exclusive claims, valid state transitions, source-verified decisions, and event deduplication; reflect progress in GitHub Issues as the shared human-readable tracker. Relying only on prompts, room history, or issue labels would be simpler, but would not enforce concurrent claims or role-specific approval. This introduces operational state and synchronization work; it must not grow into a second issue-tracker UI.
