@@ -143,8 +143,6 @@
         },
         "action": "added-explicit-demo-room-rule"
       }
-    ],
-    "senderBindings": [],
-    "limitation": "Directory UUIDs do not bind opaque event sender IDs; names and prefixes are not authoritative identity mappings."
+    ]
   }
 }

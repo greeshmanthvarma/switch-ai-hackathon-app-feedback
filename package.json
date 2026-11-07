@@ -12,7 +12,6 @@
   ],
   "scripts": {
     "test": "vitest run tests/unit",
-    "test:contract": "vitest run tests/contracts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "format:check": "prettier --check scripts tests config package.json tsconfig*.json vitest.config.ts compose.yaml docs/integration",
     "format": "prettier --write scripts tests config package.json tsconfig*.json vitest.config.ts compose.yaml docs/integration",

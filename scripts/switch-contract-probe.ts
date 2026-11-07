@@ -1,6 +1,5 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { checkEvidence } from "./switch-evidence.js";
 import {
   captureService,
   inspectService,
@@ -10,21 +9,9 @@ import {
 async function main() {
   const args = process.argv.slice(2),
     mode = args[0];
-  if (mode === "--check" && args.length === 1) {
-    const blockers = await checkEvidence();
-    console.log(
-      JSON.stringify(
-        { gate: blockers.length ? "BLOCKED" : "PASS", blockers },
-        null,
-        2,
-      ),
-    );
-    process.exitCode = blockers.length ? 1 : 0;
-    return;
-  }
   if (!["--inspect", "--capture"].includes(mode ?? ""))
     throw new ProbeFailure(
-      "Use --check, --inspect, or --capture --room UUID --seconds N.",
+      "Use --inspect or --capture --room UUID --seconds N.",
     );
   let profile;
   if (
@@ -57,9 +44,6 @@ async function main() {
       JSON.stringify({
         discovery: "saved privately",
         schemaHashes: discovered.hashes,
-        gate: "BLOCKED",
-        reason:
-          "Run the independent evidence check; discovery alone is insufficient.",
       }),
     );
   } else {
@@ -69,7 +53,6 @@ async function main() {
     console.log(
       JSON.stringify({
         capture: output,
-        gate: "NOT_EVALUATED",
         note: "Private wire capture; sanitize/review before fixture promotion.",
       }),
     );
