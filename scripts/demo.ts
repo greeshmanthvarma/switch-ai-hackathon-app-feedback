@@ -9,7 +9,13 @@ import {
   validateProfile,
 } from "./switch-connection-probe.js";
 import { openDemo, type Request } from "./demo-store.js";
-import { sendFeedbackHandoff } from "./demo-handoff.js";
+import {
+  sendFeedbackHandoff,
+  sendFixHandoff,
+  sendPrHandoff,
+} from "./demo-handoff.js";
+import { inspectFixTarget, verifyTargetPr } from "./demo-pr.js";
+import { slackApprovals } from "./demo-slack-approval.js";
 import { privateGithubTracker } from "./demo-tracker.js";
 import {
   array,
@@ -30,25 +36,56 @@ function printable(value: unknown): string {
 
 async function main() {
   const [mode, room, ...extra] = process.argv.slice(2);
+  const options = new Map<string, string>();
+  for (let i = 0; i < extra.length; i += 2) {
+    const key = extra[i]!,
+      value = extra[i + 1];
+    if (
+      ![
+        "--tracker",
+        "--target",
+        "--target-repo",
+        "--operator-sender",
+        "--feedback-sender",
+      ].includes(key) ||
+      !value ||
+      value.startsWith("--") ||
+      options.has(key)
+    )
+      break;
+    options.set(key, value);
+  }
+  const target = options.get("--target");
+  const targetRepo = options.get("--target-repo");
+  const operatorSender = options.get("--operator-sender");
+  const feedbackSender = options.get("--feedback-sender");
+  const approvalEnabled = Boolean(operatorSender && feedbackSender);
   if (
     !room ||
-    (extra.length !== 0 &&
-      !(extra.length === 2 && extra[0] === "--tracker" && extra[1])) ||
+    Boolean(operatorSender) !== Boolean(feedbackSender) ||
+    (approvalEnabled &&
+      (!target ||
+        !/^@switch-slack-[^\s:]+:[^\s]+$/.test(operatorSender!) ||
+        !/^@switch-agent-[^\s:]+:[^\s]+$/.test(feedbackSender!))) ||
+    options.size * 2 !== extra.length ||
+    Boolean(target) !== Boolean(targetRepo) ||
+    (target && !options.has("--tracker")) ||
     !["--check", "--live"].includes(mode ?? "") ||
     !/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/i.test(room)
   ) {
     console.error(
-      "Usage: npm run demo:flow -- --check|--live <Switch room UUID> [--tracker OWNER/REPO]",
+      "Usage: npm run demo:flow -- --check|--live <Switch room UUID> [--tracker OWNER/REPO] [--target ABSOLUTE_PATH --target-repo OWNER/REPO] [--operator-sender ID --feedback-sender ID]",
     );
     process.exitCode = 2;
     return;
   }
   if (mode === "--live" && (!process.stdin.isTTY || !process.stdout.isTTY)) {
-    console.error("Live approvals require a local interactive terminal.");
+    console.error("Run the live listener in an interactive terminal.");
     process.exitCode = 2;
     return;
   }
-  const tracker = extra[1] ? await privateGithubTracker(extra[1]) : null;
+  const trackerRepo = options.get("--tracker");
+  const tracker = trackerRepo ? await privateGithubTracker(trackerRepo) : null;
   const directory = resolve(".local/switch-probe");
   const profile = validateProfile(
     JSON.parse(await readFile(resolve(directory, "service.json"), "utf8")),
@@ -126,16 +163,90 @@ async function main() {
         `\nPending ${report.id} rev ${report.revision}: ${printable(report.body)}`,
       );
     }
-    function observe(frame: unknown) {
+    const receiveApproval = approvalEnabled
+      ? slackApprovals(room, operatorSender!, feedbackSender!)
+      : null;
+    const inFlight = new Set<Promise<void>>();
+    async function approveFromSlack(
+      request: Request,
+      expectedBehavior: string,
+    ) {
+      if (
+        !target ||
+        !targetRepo ||
+        !tracker ||
+        !demo ||
+        demo.issueFor(request.id)
+      )
+        throw new Error(
+          "The request needs a fresh issue and a configured private target.",
+        );
+      const activeDemo = demo;
+      const fixTarget = await inspectFixTarget(
+        target,
+        targetRepo,
+        tracker.repository,
+      );
+      if (ws.readyState !== WebSocket.OPEN)
+        throw new Error("Switch disconnected during target verification.");
+      const approved = await activeDemo.approve(
+        request.id,
+        request.revision,
+        async (claimed) => {
+          const issue = await activeDemo.track(
+            claimed.id,
+            tracker,
+            expectedBehavior,
+          );
+          console.log(`GitHub issue created for approved work: ${issue.url}`);
+          return sendFixHandoff(operation, claimed, worker, {
+            ...fixTarget,
+            issueUrl: issue.url,
+            expectedBehavior,
+          });
+        },
+      );
+      console.log(
+        `Implementation handed to feedback. Switch receipt ${approved.workerMessage}.`,
+      );
+    }
+    function observe(frame: unknown, live = true) {
       const report = demo?.receive(frame);
       if (report) reportPending(report);
+      const pendingForThread = (thread: string) =>
+        demo
+          ?.list()
+          .find(
+            (request) =>
+              request.thread === thread && request.state === "pending",
+          );
+      const approval =
+        live &&
+        receiveApproval?.(frame, (thread) => Boolean(pendingForThread(thread)));
+      if (approval) {
+        const request = pendingForThread(approval.thread);
+        if (request) {
+          const job = approveFromSlack(request, approval.expectedBehavior)
+            .catch((error: unknown) => {
+              console.log(
+                error instanceof Error
+                  ? error.message
+                  : "Slack approval failed.",
+              );
+            })
+            .finally(() => inFlight.delete(job));
+          inFlight.add(job);
+        }
+      }
       const payload = at(frame, "data", "payload");
       const body = at(payload, "body");
       if (
         at(frame, "event") === "message" &&
         at(frame, "data", "room_id") === room &&
         typeof body === "string" &&
-        /DEMO-HANDOFF-(?:REQUEST|WORKER-RESULT|RESULT) /.test(body) &&
+        /DEMO-(?:HANDOFF|PR|FIX)-(?:REQUEST|WORKER-RESULT|RESULT) /.test(
+          body,
+        ) &&
         demo
           ?.list()
           .some(
@@ -247,29 +358,34 @@ async function main() {
     for (const thread of array(at(history, "threads")).reverse()) {
       const root = at(thread, "root");
       if (at(root, "kind") !== "message") continue;
-      observe({
-        event: "message",
-        data: {
-          room_id: room,
-          payload: {
-            message_id: at(root, "id"),
-            thread_id: null,
-            body: at(root, "body"),
-            sender_kind: at(root, "sender_kind"),
-            on_behalf_of: at(root, "on_behalf_of"),
-            attachments: at(root, "attachments"),
+      observe(
+        {
+          event: "message",
+          data: {
+            room_id: room,
+            payload: {
+              message_id: at(root, "id"),
+              thread_id: null,
+              body: at(root, "body"),
+              sender_kind: at(root, "sender_kind"),
+              on_behalf_of: at(root, "on_behalf_of"),
+              attachments: at(root, "attachments"),
+            },
           },
         },
-      });
+        false,
+      );
     }
     if (ws.readyState !== WebSocket.OPEN)
       throw new Error("Switch disconnected during startup.");
     startIntake();
     console.log(
-      "Listening for @feedback report: <text>. Feedback hands off a node --version test to the worker.",
+      approvalEnabled
+        ? "Listening for feedback reports and an authorized Approved reply in the report thread."
+        : "Listening for @feedback report: <text>.",
     );
     console.log(
-      "Local commands: list | show <id> | queue-history <thread-id> | track <id> | approve <id> <revision> | release <id> | quit",
+      "Local commands: list | show <id> | queue-history <thread-id> | track <id> | approve <id> <revision> | relay-pr <id> <revision> <PR number> | release <id> | quit",
     );
     terminal = createInterface({
       input: process.stdin,
@@ -344,6 +460,57 @@ async function main() {
           } catch (e) {
             console.log(e instanceof Error ? e.message : "Approval failed.");
           }
+        } else if (
+          verb === "relay-pr" &&
+          id &&
+          /^[1-9]\d*$/.test(rev ?? "") &&
+          rest.length === 1 &&
+          /^[1-9]\d*$/.test(rest[0]!)
+        ) {
+          try {
+            if (!target || !targetRepo || !tracker)
+              throw new Error(
+                "Configure a separate target checkout, target repo and tracker first.",
+              );
+            if (ws.readyState !== WebSocket.OPEN)
+              throw new Error("Switch is disconnected; nothing relayed.");
+            const request = demo
+              .list()
+              .find(
+                (r) =>
+                  r.id === id &&
+                  r.revision === Number(rev) &&
+                  r.state === "pending",
+              );
+            const issue = demo.issueFor(id);
+            if (!request || !issue)
+              throw new Error(
+                "Select a pending revision and explicitly track its issue first.",
+              );
+            const pr = await verifyTargetPr({
+              checkout: target,
+              repository: targetRepo,
+              tracker: tracker.repository,
+              number: Number(rest[0]),
+              issueUrl: issue.url,
+            });
+            if (ws.readyState !== WebSocket.OPEN)
+              throw new Error(
+                "Switch disconnected during verification; nothing relayed.",
+              );
+            const r = await demo.approve(id, request.revision, (approved) =>
+              sendPrHandoff(operation, approved, worker, pr),
+            );
+            console.log(
+              `Verified PR sent to feedback: ${pr.url}; Switch receipt ${r.workerMessage}. Waiting for the same-thread result.`,
+            );
+          } catch (error) {
+            console.log(
+              error instanceof Error
+                ? error.message
+                : "PR verification or relay failed.",
+            );
+          }
         } else if (verb === "release" && id && !rev) {
           console.log(
             demo.release(id)
@@ -352,10 +519,11 @@ async function main() {
           );
         } else if (verb)
           console.log(
-            "Use list, show, queue-history, track, approve, release, or quit.",
+            "Use list, show, queue-history, track, approve, relay-pr, release, or quit.",
           );
       }
     } finally {
+      await Promise.allSettled(inFlight);
       process.off("SIGINT", onInterrupt);
       process.off("SIGTERM", onInterrupt);
     }

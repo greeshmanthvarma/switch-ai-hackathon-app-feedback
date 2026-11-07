@@ -1,6 +1,6 @@
 # Run the operator demo
 
-The operator approves a saved report revision in the local terminal. Slack reports and attachments provide context; they do not authorize work. The feedback agent handles the worker handoff and returns the result to the original thread.
+The transport checks use local operator approval. The Taskroom implementation flow below accepts a same-thread approval from the configured Slack operator. The feedback agent handles the worker handoff and returns the result to the original thread.
 
 ## Set up
 
@@ -38,3 +38,21 @@ The operator approves a saved report revision in the local terminal. Slack repor
 The coordinator saves requests and receipts in ignored local SQLite storage. One configured worker can handle one approved smoke test at a time; other reports can still be queued. If a dispatch receipt is ambiguous, the request remains reserved for operator review and does not retry automatically. A receipt proves Switch accepted the handoff message; a displayed sender label does not authenticate an approval. This demo trusts the local operating-system account running the terminal, and it does not open a network approval endpoint.
 
 The original deployment used Slack channel `C0CFNBEAZRQ` in Switch room `13acee29-83e4-443e-b0e8-b2c4d2c741a4`. Those are example resource identifiers, not credentials; use your own room for a new setup.
+
+## Run a Taskroom implementation demo
+
+Use the private Taskroom target repository and its `demo/atlas-workspace` branch as the buggy baseline. Run the app from the baseline checkout. Give `implementation-1` a separate clean worktree, so the worker's changes do not interrupt the app being recorded. Use the [agent instructions](agent-instructions.md) and start the listener with the private tracker, the worker checkout and repository, and the operator and feedback agent's exact Switch sender IDs. Use the authenticated Switch history's `sender` fields for these IDs.
+
+```sh
+npm run demo:flow -- --live ROOM_UUID --tracker OWNER/TRACKER \
+  --target /absolute/path/to/implementation-worktree --target-repo OWNER/TARGET \
+  --operator-sender OPERATOR_SWITCH_SENDER --feedback-sender FEEDBACK_SWITCH_SENDER
+```
+
+1. In Taskroom, select Atlas, set Status to Completed, and preview the CSV. The task list has three entries and the export contains ten.
+2. Post a fresh Slack report in your own words, such as `@feedback report: My downloaded Atlas spreadsheet has tasks I wasn't expecting.` Answer the feedback agent's questions in the original thread. Confirm what the spreadsheet should contain.
+3. After the feedback agent posts **Ready for approval** with the agreed behavior, reply **Approved** in the same Slack thread from the configured operator account. The listener uses the summary from that thread, creates the issue, and sends the task to feedback through Switch.
+4. Open the GitHub issue from the Slack thread. It starts open with the status **Approved for implementation**. The worker reproduces and fixes the issue in the separate checkout, runs the tests, and reports the result in the thread. If the worker's runtime allows GitHub writes, it can open the PR and update the issue. If publication is blocked, review the tested commit and publish it from an authorized session.
+5. Share the open PR link in the original Slack thread after publication. Check the PR and linked issue before using `release REQUEST_ID`. If a receipt is ambiguous, inspect the issue and original thread before releasing. An approved dispatch is never retried automatically.
+
+The original `approve` transport check and `relay-pr` commands are separate demo paths.

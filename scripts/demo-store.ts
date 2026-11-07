@@ -16,6 +16,16 @@ export type Request = {
 const columns =
   "id, thread, body, revision, state, worker_message AS workerMessage, attachments";
 
+function unwrapInlineCode(body: string): string {
+  const content = body.slice(1, -1);
+  return body.startsWith("`") &&
+    body.endsWith("`") &&
+    content &&
+    !content.includes("`")
+    ? content
+    : body;
+}
+
 export function openDemo(
   path: string,
   room: string,
@@ -85,7 +95,11 @@ export function openDemo(
   return {
     list,
     issueFor,
-    async track(id: string, tracker: Tracker): Promise<Issue> {
+    async track(
+      id: string,
+      tracker: Tracker,
+      expectedBehavior?: string,
+    ): Promise<Issue> {
       const request = db
         .prepare(`SELECT ${columns} FROM requests WHERE id = ? AND room = ?`)
         .get(id, room) as Request | undefined;
@@ -107,10 +121,16 @@ export function openDemo(
           "Request already belongs to a different issue tracker.",
         );
       const linked = issueFor(id);
+      if (expectedBehavior && !fresh)
+        throw new Error(
+          "Select a fresh report for implementation. This request already has an issue attempt.",
+        );
       if (linked) return linked;
       try {
         const issue = fresh
-          ? await tracker.create(request, room)
+          ? await (expectedBehavior
+              ? tracker.create(request, room, expectedBehavior)
+              : tracker.create(request, room))
           : await tracker.find(id);
         if (!issue) throw new Error("No matching issue receipt yet.");
         db.prepare(
@@ -151,7 +171,9 @@ export function openDemo(
         thread.length > 256
       )
         return null;
-      const match = /^@feedback[ \t]+report:[ \t]*(\S[\s\S]*)$/i.exec(body);
+      const match = /^@feedback[ \t]+report:[ \t]*(\S[\s\S]*)$/i.exec(
+        unwrapInlineCode(body),
+      );
       const report = match?.[1]?.trim();
       if (!report || report.length > 10_000) return null;
       return persist(thread, report, p);
@@ -167,13 +189,17 @@ export function openDemo(
         !thread ||
         thread.length > 256 ||
         typeof body !== "string" ||
-        !/^@feedback(?:\s|$)/i.test(body) ||
+        !/^@feedback(?:\s|$)/i.test(unwrapInlineCode(body)) ||
         body.length > 10_000
       )
         return null;
-      return persist(thread, body, root);
+      return persist(thread, unwrapInlineCode(body), root);
     },
-    async approve(id: string, revision: number): Promise<Request> {
+    async approve(
+      id: string,
+      revision: number,
+      send = dispatch,
+    ): Promise<Request> {
       const claimed = db
         .prepare(
           `UPDATE requests SET state = 'dispatching', approved_at = ?
@@ -188,7 +214,7 @@ export function openDemo(
           "No matching pending revision, or the configured worker is busy.",
         );
       try {
-        const workerMessage = await dispatch(claimed);
+        const workerMessage = await send(claimed);
         if (!workerMessage) throw new Error("No Switch dispatch receipt.");
         return db
           .prepare(

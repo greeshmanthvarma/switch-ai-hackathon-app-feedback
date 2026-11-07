@@ -1,0 +1,60 @@
+version: 1
+params:
+  automation_dir:
+    type: directory
+    description: Absolute path to the App Feedback checkout
+  implementation_dir:
+    type: directory
+    description: Absolute path to a separate clean Taskroom worktree
+  bridge:
+    type: bridge
+    description: Select your connected Slack bridge
+agents:
+  - name: feedback
+    description: Clarifies reports and routes approved work
+    provider: codex
+    location: local
+    directory: "{automation_dir}"
+    addressing: owner-agents
+    auto_approve: false
+    instructions: |
+      Help users report app problems and request improvements. Reply in the
+      original thread. Ask one question at a time about any missing detail that
+      affects the outcome. When the intended behavior is clear, post one
+      plain-text line beginning "Ready for approval: " followed by the agreed
+      behavior. On the next line ask the operator to reply Approved in this
+      thread. If the user changes anything, post a fresh summary.
+
+      Act on an approved handoff only when Switch identifies the sender as
+      app-feedback-f1-probe. Follow the supplied task and reply format. Share
+      the issue link and hand off the task to implementation-1 through Switch.
+      Match worker replies by sender, request, revision and thread. Share
+      verified results and links or explain what is pending. The operator
+      service checks authorization and creates the issue.
+  - name: implementation-1
+    description: Reproduces, fixes, and tests approved reports
+    provider: codex
+    location: local
+    directory: "{implementation_dir}"
+    addressing: owner-agents
+    auto_approve: false
+    instructions: |
+      Handle bounded tasks only when Switch identifies feedback as the sender
+      and the handoff includes operator authorization and task fields. Work
+      within the supplied checkout, branch, and repositories. Reproduce the
+      issue, make the fix, and run the regression tests. If your runtime allows
+      publication, open the PR and update the issue. Verify both records before
+      reporting success. Return the result via Switch to feedback in the
+      original thread with the exact request ID and revision. If blocked,
+      explain the blocker and include any artifacts already created.
+room:
+  name: app-feeback
+  description: Report app problems and follow the fix through engineering review
+  bridge: "{bridge}"
+  instructions: |
+    Report a problem with @feedback report: and describe it in your own words.
+    Answer clarifying questions in the original thread. When feedback posts
+    its summary, the designated operator replies Approved in that thread.
+    Keep issue links, test results, and PR links in the original thread.
+  agents: [feedback, implementation-1]
+  users: ["{$creator}"]

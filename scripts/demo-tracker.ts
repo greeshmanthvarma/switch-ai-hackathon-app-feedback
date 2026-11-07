@@ -5,7 +5,11 @@ import { array, at, record } from "./switch-evidence.js";
 export type Issue = { number: number; url: string };
 export interface Tracker {
   repository: string;
-  create(request: Request, room: string): Promise<Issue>;
+  create(
+    request: Request,
+    room: string,
+    expectedBehavior?: string,
+  ): Promise<Issue>;
   find(requestId: string): Promise<Issue | null>;
 }
 
@@ -40,7 +44,7 @@ export function issueMarker(id: string) {
   return `<!-- app-feedback:request=${id} -->`;
 }
 
-export function issueBody(r: Request, room: string) {
+export function issueBody(r: Request, room: string, expectedBehavior?: string) {
   // Indent untrusted report data as a literal block: no mentions or embedded HTML.
   const literal = (s: string) =>
     s
@@ -56,7 +60,16 @@ export function issueBody(r: Request, room: string) {
   return [
     issueMarker(r.id),
     "## App Feedback demo report",
-    "This is a transport test record. It does not authorize implementation or report a code fix.",
+    ...(expectedBehavior
+      ? [
+          "### Status",
+          "Approved for implementation",
+          "### Confirmed behavior",
+          literal(expectedBehavior),
+        ]
+      : [
+          "This is a transport test record. It does not authorize implementation or report a code fix.",
+        ]),
     "### Source and revision",
     literal(
       JSON.stringify(
@@ -111,12 +124,14 @@ export async function privateGithubTracker(
   }
   return {
     repository: canonical,
-    async create(request, room) {
+    async create(request, room, expectedBehavior) {
       const response = await github(
         ["--method", "POST", `${path}/issues`, "--input", "-"],
         {
-          title: `[Demo test] App Feedback request ${request.id.slice(0, 8)}`,
-          body: issueBody(request, room),
+          title: expectedBehavior
+            ? `App feedback: ${request.body.trim().replace(/\s+/g, " ").slice(0, 100)}`
+            : `[Demo test] App Feedback request ${request.id.slice(0, 8)}`,
+          body: issueBody(request, room, expectedBehavior),
         },
       );
       if (
