@@ -1,5 +1,150 @@
 {
-  "status": "not-captured",
-  "reason": "Awaiting authorized demo resources and separate service identity",
-  "capture": null
+  "status": "live-reviewed",
+  "capturedAt": "2026-11-07T02:01:07.501Z",
+  "provenance": "Authenticated Switch 0.31.0 API/WebSocket capture; sanitized identifiers and media references. No model transcript substituted for wire data.",
+  "capture": {
+    "lookup": {
+      "result": [
+        {
+          "id": "c4a082cc-6250-4b45-bdb1-0b90d1bcba53",
+          "name": "feedback",
+          "type": "agent",
+          "status": "live",
+          "alias": null
+        },
+        {
+          "id": "e4a6c4a4-8982-4f82-bca6-5332c091333d",
+          "name": "implementation-1",
+          "type": "agent",
+          "status": "live",
+          "alias": null
+        },
+        {
+          "id": "748c73f3-5ced-46ed-bee7-d0a43d779c05",
+          "name": "app-feedback-f1-probe",
+          "type": "agent",
+          "status": "live",
+          "alias": null
+        },
+        {
+          "id": "809dea76-cec2-41b7-9d3e-ff52735f9678",
+          "name": "requester",
+          "type": "user",
+          "status": null,
+          "alias": null
+        }
+      ]
+    },
+    "ownership": [
+      {
+        "id": "748c73f3-5ced-46ed-bee7-d0a43d779c05",
+        "name": "app-feedback-f1-probe",
+        "owner_id": "24cb877d-24b8-4e96-9dbe-36677a5bf20e",
+        "owner_name": "Agent Bootstrap"
+      },
+      {
+        "id": "c4a082cc-6250-4b45-bdb1-0b90d1bcba53",
+        "name": "feedback",
+        "owner_id": "9269524b-07e0-4428-9509-2ef51a7be161",
+        "owner_name": "Admin"
+      },
+      {
+        "id": "e4a6c4a4-8982-4f82-bca6-5332c091333d",
+        "name": "implementation-1",
+        "owner_id": "9269524b-07e0-4428-9509-2ef51a7be161",
+        "owner_name": "Admin"
+      }
+    ],
+    "addressing": [
+      {
+        "id": "748c73f3-5ced-46ed-bee7-d0a43d779c05",
+        "policy": {
+          "rules": [
+            {
+              "rooms": "*",
+              "room_groups": "*",
+              "users": [],
+              "agents": [],
+              "owner": true,
+              "owner_agents": true,
+              "platform": false
+            },
+            {
+              "rooms": ["13acee29-83e4-443e-b0e8-b2c4d2c741a4"],
+              "room_groups": "*",
+              "users": ["809dea76-cec2-41b7-9d3e-ff52735f9678"],
+              "agents": [
+                "c4a082cc-6250-4b45-bdb1-0b90d1bcba53",
+                "e4a6c4a4-8982-4f82-bca6-5332c091333d"
+              ],
+              "owner": false,
+              "owner_agents": false,
+              "platform": false
+            }
+          ]
+        },
+        "action": "added-explicit-demo-room-rule"
+      },
+      {
+        "id": "c4a082cc-6250-4b45-bdb1-0b90d1bcba53",
+        "policy": {
+          "rules": [
+            {
+              "rooms": "*",
+              "room_groups": "*",
+              "users": [],
+              "agents": [],
+              "owner": true,
+              "owner_agents": true,
+              "platform": false
+            },
+            {
+              "rooms": ["13acee29-83e4-443e-b0e8-b2c4d2c741a4"],
+              "room_groups": "*",
+              "users": ["809dea76-cec2-41b7-9d3e-ff52735f9678"],
+              "agents": [
+                "748c73f3-5ced-46ed-bee7-d0a43d779c05",
+                "e4a6c4a4-8982-4f82-bca6-5332c091333d"
+              ],
+              "owner": false,
+              "owner_agents": false,
+              "platform": false
+            }
+          ]
+        },
+        "action": "added-explicit-demo-room-rule"
+      },
+      {
+        "id": "e4a6c4a4-8982-4f82-bca6-5332c091333d",
+        "policy": {
+          "rules": [
+            {
+              "rooms": "*",
+              "room_groups": "*",
+              "users": [],
+              "agents": [],
+              "owner": true,
+              "owner_agents": true,
+              "platform": false
+            },
+            {
+              "rooms": ["13acee29-83e4-443e-b0e8-b2c4d2c741a4"],
+              "room_groups": "*",
+              "users": ["809dea76-cec2-41b7-9d3e-ff52735f9678"],
+              "agents": [
+                "748c73f3-5ced-46ed-bee7-d0a43d779c05",
+                "c4a082cc-6250-4b45-bdb1-0b90d1bcba53"
+              ],
+              "owner": false,
+              "owner_agents": false,
+              "platform": false
+            }
+          ]
+        },
+        "action": "added-explicit-demo-room-rule"
+      }
+    ],
+    "senderBindings": [],
+    "limitation": "Directory UUIDs do not bind opaque event sender IDs; names and prefixes are not authoritative identity mappings."
+  }
 }

@@ -1,5 +1,7 @@
 import { test, expect } from "vitest";
-import { checkEvidence } from "../../scripts/switch-evidence.js";
-test("F1 requires actual reviewed live captures, never synthetic success fixtures", async () => {
-  expect(await checkEvidence()).toEqual([]);
-});
+import { assessEvidence, loadEvidence } from "../../scripts/switch-evidence.js";
+const checks = assessEvidence(await loadEvidence());
+for (const [name, errors] of Object.entries(checks))
+  test(`released Switch contract: ${name}`, () => {
+    expect(errors).toEqual([]);
+  });

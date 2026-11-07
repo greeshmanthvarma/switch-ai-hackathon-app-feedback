@@ -1,5 +1,334 @@
 {
-  "status": "not-captured",
-  "reason": "Awaiting authorized demo resources and separate service identity",
-  "capture": null
+  "status": "live-reviewed",
+  "capturedAt": "2026-11-07T02:01:07.501Z",
+  "provenance": "Authenticated Switch 0.31.0 API/WebSocket capture; sanitized identifiers and media references. No model transcript substituted for wire data.",
+  "capture": {
+    "history": {
+      "result": {
+        "threads": [
+          {
+            "root": {
+              "id": "sw_7b6ac1912de430ce589a51e01d91302a",
+              "kind": "message",
+              "sender": "@switch-slack-8feae6df-5e77-442d-a394-d5a3d64fc4ef-requester:fixture-server",
+              "sender_name": "requester",
+              "body": "@feedback Connection test TEST-001. Please reply in a thread on this message with “Received TEST-001” and the name of the Switch room you’re connected to.",
+              "timestamp": 1794010045940,
+              "attachments": []
+            },
+            "replies": [
+              {
+                "id": "sw_e5793f7e2fcbba2186aab403e0d2e151",
+                "kind": "message",
+                "sender": "@switch-admin:fixture-server",
+                "sender_name": "admin",
+                "body": "⚠️ @requester **feedback** isn't in this room, so your message won't reach it. Add the agent from the room's detail page in the gateway, or have an agent with room-management tools invite it.",
+                "timestamp": 1794010045964,
+                "attachments": []
+              }
+            ]
+          },
+          {
+            "root": {
+              "id": "sw_248160b695bdfa3715dd86746308fbbd",
+              "kind": "message",
+              "sender": "@switch-slack-8feae6df-5e77-442d-a394-d5a3d64fc4ef-requester:fixture-server",
+              "sender_name": "requester",
+              "body": "@feedback Connection test TEST-001. Please reply in a thread on this message with “Received TEST-001” and the name of the Switch room you’re connected to.",
+              "timestamp": 1794010092156,
+              "attachments": []
+            },
+            "replies": [
+              {
+                "id": "sw_3b621d1241304678924abea1f5322304",
+                "kind": "message",
+                "sender": "@switch-agent-bcf746c5:fixture-server",
+                "sender_name": "feedback",
+                "body": "Received TEST-001 — connected to Switch room “Slack: app-feeback”.",
+                "timestamp": 1794010104179,
+                "attachments": []
+              }
+            ]
+          },
+          {
+            "root": {
+              "id": "sw_4e7b95f80c8f7e7dca3c95a8eebb93b8",
+              "kind": "message",
+              "sender": "@switch-slack-8feae6df-5e77-442d-a394-d5a3d64fc4ef-requester:fixture-server",
+              "sender_name": "requester",
+              "body": "@feedback Screenshot test TEST-002. Open the attached image and describe one specific visible detail. If you cannot access it, say so. Reply in this thread.",
+              "timestamp": 1794010581887,
+              "attachments": [
+                {
+                  "filename": "image.png",
+                  "mimetype": "image/png",
+                  "size": 562512,
+                  "mxc": "switch-media://redacted-da1f750e6895",
+                  "msgtype": "m.image"
+                }
+              ]
+            },
+            "replies": [
+              {
+                "id": "sw_f964789e32d64c0ea6e1491b22d02e2f",
+                "kind": "message",
+                "sender": "@switch-agent-bcf746c5:fixture-server",
+                "sender_name": "feedback",
+                "body": "Received TEST-002. I can access the screenshot: the right-hand Thread panel shows the reply “Received TEST-001 — connected to Switch room ‘Slack: app-feeback’.”",
+                "timestamp": 1794010586567,
+                "attachments": []
+              }
+            ]
+          },
+          {
+            "root": {
+              "id": "sw_239fff292bb2df0436ca896e5a16070a",
+              "kind": "message",
+              "sender": "@switch-slack-8feae6df-5e77-442d-a394-d5a3d64fc4ef-requester:fixture-server",
+              "sender_name": "requester",
+              "body": "@feedback Runtime test TEST-003. Run `node --version` and report the result and your current working directory. Also report whether native Switch context exposes a source Slack message or thread permalink. If unavailable, say so; do not construct or guess a link. Reply in this thread.",
+              "timestamp": 1794010634730,
+              "attachments": []
+            },
+            "replies": [
+              {
+                "id": "sw_174862f4d7bd44bd9c0aa8e4513e926a",
+                "kind": "message",
+                "sender": "@switch-agent-bcf746c5:fixture-server",
+                "sender_name": "feedback",
+                "body": "Received TEST-003. `node --version` returned `v22.19.0` (success).\nCurrent working directory: `<demo-root>`.\nNative Switch context does not expose a source Slack message or thread permalink in the delivered event or room history. It provides Switch message IDs and thread grouping; a Slack permalink is unavailable.",
+                "timestamp": 1794010643396,
+                "attachments": []
+              }
+            ]
+          },
+          {
+            "root": {
+              "id": "sw_18958e4d94718483aa2d8bb601898fd7",
+              "kind": "message",
+              "sender": "@switch-slack-8feae6df-5e77-442d-a394-d5a3d64fc4ef-requester:fixture-server",
+              "sender_name": "requester",
+              "body": "@feedback Handoff test TEST-005. Use native Switch tools to send implementation-1 a targeted message asking it to run `node --version` and return the result to you. Keep the handoff associated with this thread. After receiving its response, report the result here. Report any routing or addressing failure honestly.",
+              "timestamp": 1794012105571,
+              "attachments": []
+            },
+            "replies": [
+              {
+                "id": "sw_98b9cf0375e64d38bf4b72bf15d88502",
+                "kind": "message",
+                "sender": "@switch-agent-bcf746c5:fixture-server",
+                "sender_name": "feedback",
+                "body": "@implementation-1 TEST-005 handoff: Please run `node --version` and return the actual output and exit status to feedback using a targeted Switch reply in this same thread. Report any execution failure honestly.",
+                "timestamp": 1794012112757,
+                "attachments": []
+              },
+              {
+                "id": "sw_b85fd1a01fa84f1a98bcffc567405fab",
+                "kind": "message",
+                "sender": "@switch-agent-d4adcddd:fixture-server",
+                "sender_name": "implementation-1",
+                "body": "Starting a session to handle this — one moment.",
+                "timestamp": 1794012112850,
+                "attachments": []
+              },
+              {
+                "id": "sw_143296d31f8846a0bb1102f7b5f15c6a",
+                "kind": "message",
+                "sender": "@switch-agent-d4adcddd:fixture-server",
+                "sender_name": "implementation-1",
+                "body": "@feedback TEST-005 complete: `node --version` returned actual output `v22.19.0` with exit status `0`.",
+                "timestamp": 1794012127152,
+                "attachments": []
+              },
+              {
+                "id": "sw_99474e4081c24b49902d7bcbe9447225",
+                "kind": "message",
+                "sender": "@switch-agent-bcf746c5:fixture-server",
+                "sender_name": "feedback",
+                "body": "TEST-005 handoff sent in this thread. Switch reported implementation-1 as live; its command result is still pending.",
+                "timestamp": 1794012167142,
+                "attachments": []
+              },
+              {
+                "id": "sw_3a0d4f46e55f4c36a4ef8dc2c338fd8c",
+                "kind": "message",
+                "sender": "@switch-agent-bcf746c5:fixture-server",
+                "sender_name": "feedback",
+                "body": "TEST-005 complete: implementation-1 reported `node --version` → `v22.19.0`, exit status `0`, in this same thread. The targeted handoff worked. Its reply was present in room history, but no addressed event reached this active turn; I recovered it by reading context. My earlier “pending” update was stale.",
+                "timestamp": 1794012225471,
+                "attachments": []
+              },
+              {
+                "id": "sw_ec0fdd5850c54063bc1883dd46efbe20",
+                "kind": "message",
+                "sender": "@switch-agent-bcf746c5:fixture-server",
+                "sender_name": "feedback",
+                "body": "TEST-005 delivery update: implementation-1’s addressed reply has now arrived as a session event too. Both directions of the targeted handoff worked in this thread; event delivery was delayed until after my previous turn. Result confirmed: `v22.19.0`, exit `0`.",
+                "timestamp": 1794012234011,
+                "attachments": []
+              }
+            ]
+          },
+          {
+            "root": {
+              "id": "sw_fe370c077b90a5917b7bde29038be956",
+              "kind": "message",
+              "sender": "@switch-slack-8feae6df-5e77-442d-a394-d5a3d64fc4ef-requester:fixture-server",
+              "sender_name": "requester",
+              "body": "@feedback Attachment test TEST-006. Inspect both attached screenshots and describe one distinct visible detail from each. Treat them as evidence for this single message and reply once in its thread. Report if either attachment is missing or inaccessible.",
+              "timestamp": 1794012335903,
+              "attachments": [
+                {
+                  "filename": "image.png",
+                  "mimetype": "image/png",
+                  "size": 562512,
+                  "mxc": "switch-media://redacted-aaf159d5c246",
+                  "msgtype": "m.image"
+                },
+                {
+                  "filename": "group-light.png",
+                  "mimetype": "image/png",
+                  "size": 423216,
+                  "mxc": "switch-media://redacted-444f32897b25",
+                  "msgtype": "m.image"
+                }
+              ]
+            },
+            "replies": [
+              {
+                "id": "sw_a64f3925f56d42c8bc74f61d75597441",
+                "kind": "message",
+                "sender": "@switch-agent-bcf746c5:fixture-server",
+                "sender_name": "feedback",
+                "body": "Received TEST-006. Both attachments are accessible as evidence for this message.\n- Screenshot 1: Slack’s right-hand Thread panel shows the “Received TEST-001” reply naming “Slack: app-feeback”.\n- Screenshot 2: sample expense app’s “sample group” group shows “Total Expenses: 240” and two expense rows named “food” and “breakfast”.",
+                "timestamp": 1794012341341,
+                "attachments": []
+              }
+            ]
+          },
+          {
+            "root": {
+              "id": "sw_4d415443df224d50b94c3feeb827b7a4",
+              "kind": "message",
+              "sender": "@switch-slack-8feae6df-5e77-442d-a394-d5a3d64fc4ef-requester:fixture-server",
+              "sender_name": "requester",
+              "body": "@feedback Identity test TEST-007. Use native Switch participant lookup to report the stable participant IDs and explicit participant kinds for me, feedback, and implementation-1. Include agent-owner mappings only if the tool exposes them. Do not infer kinds or ownership from names or ID formatting. State any unavailable fields. Reply in this thread; do not reveal credentials.",
+              "timestamp": 1794012384127,
+              "attachments": []
+            },
+            "replies": [
+              {
+                "id": "sw_4b3d985ff25b4f1ca1ba9b62891482cb",
+                "kind": "message",
+                "sender": "@switch-agent-bcf746c5:fixture-server",
+                "sender_name": "feedback",
+                "body": "Received TEST-007. Native participant lookup explicitly returned:\n- **requester** — ID `809dea76-cec2-41b7-9d3e-ff52735f9678`; kind (`type`): `user`.\n- **feedback** — ID `c4a082cc-6250-4b45-bdb1-0b90d1bcba53`; kind (`type`): `agent`.\n- **implementation-1** — ID `e4a6c4a4-8982-4f82-bca6-5332c091333d`; kind (`type`): `agent`.\nAgent-owner mappings are unavailable in this lookup: it exposes no ownership fields.",
+                "timestamp": 1794012393654,
+                "attachments": []
+              }
+            ]
+          },
+          {
+            "root": {
+              "id": "sw_05a5da05d4f96c5959ba28e74748a9e5",
+              "kind": "message",
+              "sender": "@switch-slack-8feae6df-5e77-442d-a394-d5a3d64fc4ef-requester:fixture-server",
+              "sender_name": "requester",
+              "body": "@feedback Profile test TEST-008. Use Node to read and parse only `<demo-root>/.local/profiles/f1-probe.json`. Report its profileName and marker, plus whether access succeeded. Do not read other profiles or credentials. Reply in this thread.",
+              "timestamp": 1794012469814,
+              "attachments": []
+            },
+            "replies": [
+              {
+                "id": "sw_b4a2c07e667e41ccb289a18e9bab8904",
+                "kind": "message",
+                "sender": "@switch-agent-bcf746c5:fixture-server",
+                "sender_name": "feedback",
+                "body": "Received TEST-008. Node successfully read and parsed the specified file. `profileName`: `f1-probe`; `marker`: `F1-PROFILE-008`. Access succeeded. No other profiles or credentials were read.",
+                "timestamp": 1794012478799,
+                "attachments": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "live": [
+      {
+        "event": "message",
+        "data": {
+          "type": "message",
+          "room_id": "13acee29-83e4-443e-b0e8-b2c4d2c741a4",
+          "bridge_id": "8feae6df-5e77-442d-a394-d5a3d64fc4ef",
+          "channel_type": "channel_public",
+          "payload": {
+            "addressed": true,
+            "sender": "@switch-agent-bcf746c5:fixture-server",
+            "sender_name": "feedback",
+            "sender_kind": null,
+            "on_behalf_of": null,
+            "message_id": "sw_373015fed01448feb7b68e988d11dfde",
+            "body": "@app-feedback-f1-probe F1-LIVE-FEEDBACK-001 ACK",
+            "timestamp": 1794016691894,
+            "thread_id": "sw_dbee19dfb9d9462d82667358f4af840a",
+            "attachments": [],
+            "opening_message": null,
+            "sender_role": null
+          },
+          "sequence": 4294967297,
+          "position": {
+            "s": 4294967297
+          },
+          "missed": {
+            "count": 0,
+            "reason": null
+          }
+        },
+        "id": 4294967297
+      },
+      {
+        "event": "message",
+        "data": {
+          "type": "message",
+          "room_id": "13acee29-83e4-443e-b0e8-b2c4d2c741a4",
+          "bridge_id": "8feae6df-5e77-442d-a394-d5a3d64fc4ef",
+          "channel_type": "channel_public",
+          "payload": {
+            "addressed": true,
+            "sender": "@switch-agent-d4adcddd:fixture-server",
+            "sender_name": "implementation-1",
+            "sender_kind": null,
+            "on_behalf_of": null,
+            "message_id": "sw_8a58b09abae543b586274f1a405375b1",
+            "body": "@app-feedback-f1-probe F1-LIVE-WORKER-001: `node --version` output: `v22.19.0`; exit code: `0`.",
+            "timestamp": 1794016693127,
+            "thread_id": "sw_dbee19dfb9d9462d82667358f4af840a",
+            "attachments": [],
+            "opening_message": null,
+            "sender_role": null
+          },
+          "sequence": 4294967298,
+          "position": {
+            "s": 4294967298
+          },
+          "missed": {
+            "count": 0,
+            "reason": null
+          }
+        },
+        "id": 4294967298
+      }
+    ],
+    "serviceRoot": {
+      "name": "post_message",
+      "args": {
+        "body": "F1-LIVE-001 — labeled deterministic service contract test. Worker and feedback handoffs will remain in this thread. No application changes requested."
+      },
+      "response": {
+        "result": {
+          "event_id": "sw_dbee19dfb9d9462d82667358f4af840a"
+        }
+      }
+    }
+  }
 }

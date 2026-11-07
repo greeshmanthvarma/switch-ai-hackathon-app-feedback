@@ -1,5 +1,154 @@
 {
-  "status": "not-captured",
-  "reason": "Awaiting authorized demo resources and separate service identity",
-  "capture": null
+  "status": "live-reviewed",
+  "capturedAt": "2026-11-07T02:01:07.497Z",
+  "provenance": "Authenticated Switch 0.31.0 API/WebSocket capture; sanitized identifiers and media references. No model transcript substituted for wire data.",
+  "capture": {
+    "release": {
+      "version": "0.31.0",
+      "contracts": {
+        "agent-protocol": {
+          "speaks": 9,
+          "accepts": 1
+        }
+      }
+    },
+    "operations": {
+      "read_context": {
+        "input_schema": {
+          "properties": {
+            "limit": {
+              "default": 50,
+              "title": "Limit",
+              "type": "integer"
+            },
+            "since": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Since"
+            },
+            "before": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Before"
+            },
+            "room_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Room Id"
+            }
+          },
+          "type": "object"
+        },
+        "sha256": "4bf490f0ffa81ca0e65921d1e65922ef96caf009967072cc89ed0c3581bdb034"
+      },
+      "post_message": {
+        "input_schema": {
+          "properties": {
+            "body": {
+              "title": "Body",
+              "type": "string"
+            },
+            "thread_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Thread Id"
+            }
+          },
+          "required": ["body"],
+          "type": "object"
+        },
+        "sha256": "b6114adfeb38fa1c72063b5b3755529ff6f171da3d657bdc4c9466595e0173a9"
+      },
+      "send_targeted_message": {
+        "input_schema": {
+          "properties": {
+            "body": {
+              "title": "Body",
+              "type": "string"
+            },
+            "target_names": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Target Names"
+            },
+            "target_roles": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Target Roles"
+            },
+            "thread_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Thread Id"
+            }
+          },
+          "required": ["body"],
+          "type": "object"
+        },
+        "sha256": "bf1e1bc3bf49bc2f25079384edea80062e80d30afe2516a0d8ea111f2d781148"
+      },
+      "list_participants": {
+        "input_schema": {
+          "type": "object",
+          "properties": {}
+        },
+        "sha256": "efddc7bd8bbcef73a14eb1ace1ffdaec81e518ef1e13c1e9271d0b8acb694a49"
+      }
+    }
+  }
 }

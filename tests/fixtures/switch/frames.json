@@ -1,5 +1,77 @@
 {
-  "status": "not-captured",
-  "reason": "Awaiting authorized demo resources and separate service identity",
-  "capture": null
+  "status": "live-reviewed",
+  "capturedAt": "2026-11-07T02:01:07.501Z",
+  "provenance": "Authenticated Switch 0.31.0 API/WebSocket capture; sanitized identifiers and media references. No model transcript substituted for wire data.",
+  "capture": {
+    "firstConnection": {
+      "event": "connection_state",
+      "data": {
+        "connection_id": "47e62ddc-7604-4018-b1a1-815f0c01ed69",
+        "agent_id": "748c73f3-5ced-46ed-bee7-d0a43d779c05",
+        "generation": 8589934592,
+        "scope": "single",
+        "filter": "all",
+        "spawn_capable": false,
+        "rooms": ["13acee29-83e4-443e-b0e8-b2c4d2c741a4"],
+        "cursor": 4294967296,
+        "position": {
+          "s": 4294967296,
+          "r:13acee29-83e4-443e-b0e8-b2c4d2c741a4": 38
+        },
+        "protocol": 9,
+        "heartbeat_interval_seconds": 2,
+        "server": {
+          "version": "0.31.0",
+          "contracts": {
+            "agent-protocol": {
+              "speaks": 9,
+              "accepts": 1
+            }
+          }
+        },
+        "client": {
+          "speaks": 9,
+          "accepts": 9,
+          "artifact": "app-feedback-f1-probe",
+          "version": "0.0.0"
+        }
+      }
+    },
+    "capture": [
+      {
+        "event": "connection_state",
+        "data": {
+          "connection_id": "25f7967c-d1f7-47c3-bd37-6f51e039e2ba",
+          "agent_id": "748c73f3-5ced-46ed-bee7-d0a43d779c05",
+          "generation": 8589934593,
+          "scope": "single",
+          "filter": "all",
+          "spawn_capable": false,
+          "rooms": ["13acee29-83e4-443e-b0e8-b2c4d2c741a4"],
+          "cursor": 4294967296,
+          "position": {
+            "s": 4294967296,
+            "r:13acee29-83e4-443e-b0e8-b2c4d2c741a4": 38
+          },
+          "protocol": 9,
+          "heartbeat_interval_seconds": 2,
+          "server": {
+            "version": "0.31.0",
+            "contracts": {
+              "agent-protocol": {
+                "speaks": 9,
+                "accepts": 1
+              }
+            }
+          },
+          "client": {
+            "speaks": 9,
+            "accepts": 9,
+            "artifact": "app-feedback-f1-probe",
+            "version": "0.0.0"
+          }
+        }
+      }
+    ]
+  }
 }

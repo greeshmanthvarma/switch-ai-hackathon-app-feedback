@@ -6,3 +6,11 @@ node_modules/
 sample-app/
 coverage/
 .DS_Store
+work/
+
+# Local development documents; retain setup and agent guides.
+/SPEC.md
+/CONTEXT.md
+/docs/plans/
+/docs/adr/
+/docs/integration/switch-contract.md
